@@ -42,6 +42,10 @@ def main():
     if not os.path.exists(posts_folder):
         parser.error('Folder not found: {}'.format(posts_folder))
 
+    print('Ipynb filepath : {}'.format(ipynb_filepath))
+    print('Assets folder  : {}'.format(assets_folder))
+    print('Posts  folder  : {}'.format(posts_folder))
+
     # Get filename and folder from jupyter notebook path
     ipynb_filename = os.path.splitext(os.path.basename(ipynb_filepath))[0]
     ipynb_folder = os.path.dirname(ipynb_filepath)
@@ -63,7 +67,7 @@ def main():
             raise Exception('Multiple files named the same way with different dates')
     else:
         files = [f for f in os.listdir(posts_folder) if ipynb_filename in f]
-        if len(files) == 0: 
+        if len(files) == 0:
             dt = datetime.datetime.now()
         elif len(files) == 1:
             dt = datetime.datetime.strptime(files[0][:10], '%Y-%m-%d')
@@ -80,10 +84,15 @@ def main():
     pattern = r'\!\[.*?\]\((.+?)\)'
     images = re.findall(pattern, body)
 
-    # Replace links
+    # Replace image links
+    def image_replace(match):
+        image_title, image_path = match.groups()
+        return '![{}]({{{{ site.baseurl }}}}/assets/{}/{})'.format(
+            image_title, image_folder_name, image_path.split('/')[-1])
+
     pattern = r'\!\[(.*?)\]\((.+?)\)'
-    new_pattern = r'![\1]({{{{ site.baseurl }}}}/assets/{}/\2)'.format(image_folder_name)
-    body = re.sub(pattern, new_pattern, body)
+    #new_pattern = r'![\1]({{{{ site.baseurl }}}}/{}/{}/\2)'.format(assets_folder, image_folder_name)
+    body = re.sub(pattern, image_replace, body)
 
     # Replace single dollar signs for inline equations
     pattern = r'(?<!\$)\$(?!\$)'
@@ -104,8 +113,10 @@ def main():
 
         # Write images
         for image in images:
-            image_path = os.path.join(images_folder, image)
+            image_path = os.path.join(images_folder, image.split('/')[-1])
             print('Writing image : {}'.format(image))
+
+            print(image_path)
 
             if image in resources['outputs']:
                 data = resources['outputs'][image]
