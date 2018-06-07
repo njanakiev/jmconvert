@@ -15,3 +15,6 @@ Simply run:
 To use it:
 
     $ jjconvert --help
+    
+# License 
+This project is licensed under the MIT license. See the [LICENSE](LICENSE) for details.
