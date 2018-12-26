@@ -32,19 +32,19 @@ def main():
     assets_folder  = args.assets_folder if args.assets_folder else 'assets'
     jekyll_folder  = args.jekyll_folder if args.jekyll_folder else ''
     current_time   = args.t
-    assets_folder  = os.path.join(jekyll_folder, assets_folder)
-    posts_folder   = os.path.join(jekyll_folder, posts_folder)
+    assets_path    = os.path.join(jekyll_folder, assets_folder)
+    posts_path     = os.path.join(jekyll_folder, posts_folder)
 
     if not os.path.exists(ipynb_filepath):
         parser.error('File not found: {}'.format(ipynb_filepath))
-    if not os.path.exists(assets_folder):
-        parser.error('Folder not found: {}'.format(assets_folder))
-    if not os.path.exists(posts_folder):
-        parser.error('Folder not found: {}'.format(posts_folder))
+    if not os.path.exists(assets_path):
+        parser.error('Folder not found: {}'.format(assets_path))
+    if not os.path.exists(assets_path):
+        parser.error('Folder not found: {}'.format(assets_path))
 
     print('Ipynb filepath : {}'.format(ipynb_filepath))
-    print('Assets folder  : {}'.format(assets_folder))
-    print('Posts  folder  : {}'.format(posts_folder))
+    print('Assets path    : {}'.format(assets_path))
+    print('Posts path     : {}'.format(posts_path))
 
     # Get filename and folder from jupyter notebook path
     ipynb_filename = os.path.splitext(os.path.basename(ipynb_filepath))[0]
@@ -60,13 +60,13 @@ def main():
     # Get current date
     if current_time:
         dt = datetime.datetime.now()
-        files = [f for f in os.listdir(posts_folder) if ipynb_filename in f]
+        files = [f for f in os.listdir(posts_path) if ipynb_filename in f]
         if len(files) == 1:
-             os.remove(os.path.join(posts_folder, files[0]))
+             os.remove(os.path.join(posts_path, files[0]))
         elif len(files) > 1:
             raise Exception('Multiple files named the same way with different dates')
     else:
-        files = [f for f in os.listdir(posts_folder) if ipynb_filename in f]
+        files = [f for f in os.listdir(posts_path) if ipynb_filename in f]
         if len(files) == 0:
             dt = datetime.datetime.now()
         elif len(files) == 1:
@@ -74,7 +74,7 @@ def main():
         else:
             raise Exception('Multiple files named the same way with different dates')
 
-    markdown_filepath = os.path.join(posts_folder, '{}-{}.md'.format(
+    markdown_filepath = os.path.join(posts_path, '{}-{}.md'.format(
             dt.strftime('%Y-%m-%d'), ipynb_filename))
 
     # Remove first line break
@@ -87,8 +87,9 @@ def main():
     # Replace image links
     def image_replace(match):
         image_title, image_path = match.groups()
-        return '![{}]({{{{ site.baseurl }}}}/assets/{}/{})'.format(
-            image_title, image_folder_name, image_path.split('/')[-1])
+        return '![{}]({{{{ site.baseurl }}}}/{}/{}/{})'.format(
+            image_title, assets_folder,
+            image_folder_name, image_path.split('/')[-1])
 
     pattern = r'\!\[(.*?)\]\((.+?)\)'
     #new_pattern = r'![\1]({{{{ site.baseurl }}}}/{}/{}/\2)'.format(assets_folder, image_folder_name)
@@ -106,7 +107,7 @@ def main():
     # Check if there are any images
     if images:
         # Remove existing image folder and create new one
-        images_folder = os.path.join(assets_folder, image_folder_name)
+        images_folder = os.path.join(assets_path, image_folder_name)
         if os.path.exists(images_folder):
             shutil.rmtree(images_folder)
         os.mkdir(images_folder)
