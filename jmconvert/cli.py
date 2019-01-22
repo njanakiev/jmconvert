@@ -77,6 +77,11 @@ def main():
         # Remove first cell
         nb.cells.remove(first_cell)
 
+    # Remove all cells marked hidden
+    for cell in nb.cells:
+        if cell.metadata and cell.metadata.get('hide', False):
+            nb.cells.remove(cell)
+
     (body, resources) = markdown_exporter.from_notebook_node(nb)
     body = front_matter + body
 
