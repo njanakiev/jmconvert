@@ -55,7 +55,30 @@ def main():
     markdown_exporter = nbconvert.MarkdownExporter()
     with open(ipynb_filepath, 'r') as f:
         nb = nbformat.reads(f.read(), as_version=4)
+
+    front_matter = ""
+    first_cell = nb.cells[0]
+    # Chech if metadata has been added to first cell
+    if first_cell.metadata:
+        # Get title from first cell
+        title = first_cell.source.replace('#', '').strip()
+
+        # Generate front matter from metadata
+        front_matter = "---\n"
+        front_matter += "title: {}\n".format(title)
+        for key, value in first_cell.metadata.items():
+            front_matter += "{}: {}\n".format(key, value)
+
+        front_matter += "---\n"
+
+        print('Front matter created from metadata : ')
+        print(front_matter)
+
+        # Remove first cell
+        nb.cells.remove(first_cell)
+
     (body, resources) = markdown_exporter.from_notebook_node(nb)
+    body = front_matter + body
 
     # Get current date
     if current_time:
@@ -77,8 +100,8 @@ def main():
     markdown_filepath = os.path.join(posts_path, '{}-{}.md'.format(
             dt.strftime('%Y-%m-%d'), ipynb_filename))
 
-    # Remove first line break
-    body = body[1:]
+    # Remove first and last line breaks
+    body = body.strip()
 
     # Find all image links
     pattern = r'\!\[.*?\]\((.+?)\)'
