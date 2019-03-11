@@ -78,7 +78,7 @@ def main():
         nb.cells.remove(first_cell)
 
     # Remove all cells marked hidden
-    for cell in nb.cells:
+    for cell in list(nb.cells):
         if cell.metadata and cell.metadata.get('hide', False):
             nb.cells.remove(cell)
 
