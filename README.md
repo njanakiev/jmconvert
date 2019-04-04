@@ -14,7 +14,7 @@ Simply run:
 
 To use it:
 
-    $ jjconvert --help
+    $ jmconvert --help
     
 # License 
 This project is licensed under the MIT license. See the [LICENSE](LICENSE) for details.
