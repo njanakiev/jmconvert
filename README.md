@@ -18,21 +18,17 @@ To use it, have a look at the help:
 
     $ jmconvert --help
     
-    usage: jmconvert [-h] [-f JEKYLL_FOLDER] [-a ASSETS_FOLDER] [-p POSTS_FOLDER]
-                 [-t]
-                 ipynb_filepath
+    usage: jmconvert [-h] [-o] ipynb_filepath jekyll_folder                                             
 
-    Jupyter notebook to Jekyll markdown converter
+    Jupyter notebook to Jekyll markdown converter   
 
-    positional arguments:
-      ipynb_filepath    Jupyter notebook path
+    positional arguments:   
+      ipynb_filepath  Jupyter notebook path         
+      jekyll_folder   Jekyll folder path            
 
-    optional arguments:
-      -h, --help        show this help message and exit
-      -f JEKYLL_FOLDER  Jekyll folder path
-      -a ASSETS_FOLDER  Assets folder path
-      -p POSTS_FOLDER   Posts folder path
-      -t                Use current time as date
+    optional arguments:     
+      -h, --help      show this help message and exit                                                
+      -o              Overwrite existing
     
 # License 
 This project is licensed under the MIT license. See the [LICENSE](LICENSE) for details.
