@@ -6,7 +6,7 @@ import nbformat
 import nbconvert
 
 
-EXCLUDE_METADATA = ['language_info', 'kernelspec', 'date']
+EXCLUDE_METADATA = ['date']
 
 
 def parse(ipynb_filepath, assets_path, posts_path, overwrite=False):
@@ -29,7 +29,11 @@ def parse(ipynb_filepath, assets_path, posts_path, overwrite=False):
     # Generate front matter from metadata
     front_matter = "---\n"
     front_matter += "title: \"{}\"\n".format(title)
-    for key, value in nb.metadata.items():
+    
+    # Get article metadata
+    article_metadata = nb.metadata['article_metadata']
+
+    for key, value in article_metadata.items():
         if key not in EXCLUDE_METADATA:
             if key == 'image':
                 images.append(value)
@@ -53,8 +57,8 @@ def parse(ipynb_filepath, assets_path, posts_path, overwrite=False):
 
 
     # Get current date
-    if 'date' in nb.metadata:
-        dt = datetime.datetime.strptime(nb.metadata['date'], '%Y-%m-%d')
+    if 'date' in article_metadata:
+        dt = datetime.datetime.strptime(article_metadata['date'], '%Y-%m-%d')
     else:
         files = [f for f in os.listdir(posts_path) if ipynb_filename in f]
         if len(files) == 0:

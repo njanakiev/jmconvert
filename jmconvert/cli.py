@@ -2,8 +2,8 @@ from __future__ import print_function
 import os
 import argparse
 
-import parse
-#from . import parse
+#import parse
+from . import parse
 
 
 def main():
