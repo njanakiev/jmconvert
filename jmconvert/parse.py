@@ -35,13 +35,17 @@ def parse(ipynb_filepath, assets_path, posts_path, overwrite=False):
 
     for key, value in article_metadata.items():
         if key not in EXCLUDE_METADATA:
-            if key == 'image':
-                images.append(value)
-                value = '/assets/{}/{}'.format(
-                    image_folder_name, value.split('/')[-1])
+            if key == 'date_modified':
+                front_matter += "seo:\n"
+                front_matter += f"    date_modified: {value}\n"
+            else:
+                if key == 'image':
+                    images.append(value)
+                    value = '/assets/{}/{}'.format(
+                        image_folder_name, value.split('/')[-1])
 
-            front_matter += "{}: {}\n".format(key, value)
-    front_matter += "---\n"
+                front_matter += "{}: {}\n".format(key, value)
+    front_matter += "---\n\n"
 
     print('Front matter created from metadata : ')
     print(front_matter)
